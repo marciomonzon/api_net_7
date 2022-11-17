@@ -24,9 +24,9 @@ namespace SuperHeroApi.Services
             return await _context.SuperHeroes.ToListAsync();
         }
 
-        public SuperHero GetSingleHero(int id)
+        public async Task<SuperHero> GetSingleHero(int id)
         {
-            var hero = _context.SuperHeroes.First(x => x.Id == id);
+            var hero = await _context.SuperHeroes.FirstAsync(x => x.Id == id);
 
             if (hero == null)
                 return new SuperHero();
@@ -34,9 +34,9 @@ namespace SuperHeroApi.Services
             return hero;  
         }
 
-        public List<SuperHero> UpdateHero(int id, SuperHero request)
+        public async Task<List<SuperHero>> UpdateHero(int id, SuperHero request)
         {
-            var hero = _context.SuperHeroes.First(x => x.Id == id);
+            var hero = await _context.SuperHeroes.FirstOrDefaultAsync(x => x.Id == id);
 
             if (hero == null)
                 return new List<SuperHero>();
@@ -47,20 +47,20 @@ namespace SuperHeroApi.Services
             hero.Place = request.Place;
 
             _context.SuperHeroes.Update(hero);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return GetAllHeroes();
+            return await GetAllHeroes();
         }
 
-        public List<SuperHero> DeleteHero(int id)
+        public async Task<List<SuperHero>> DeleteHero(int id)
         {
-            var hero = _context.SuperHeroes.First(x => x.Id == id);
+            var hero = await _context.SuperHeroes.FirstOrDefaultAsync(x => x.Id == id);
             if (hero is null)
                 return new List<SuperHero>();
 
             _context.SuperHeroes.Remove(hero);
-            _context.SaveChanges();
-            return GetAllHeroes();
+            await _context.SaveChangesAsync();
+            return await GetAllHeroes();
         }
     }
 }
